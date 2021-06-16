@@ -1,0 +1,9 @@
+@import 'bootstrap/dist/css/bootstrap';
+
+.navbar{
+    padding:0 5% !important;
+    &-brand{
+        font-size: 1.5rem !important;
+    }
+}
+
