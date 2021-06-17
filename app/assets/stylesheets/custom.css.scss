@@ -1,5 +1,5 @@
 @import 'bootstrap/dist/css/bootstrap';
-
+@import "font-awesome";
 .navbar{
     padding:0 5% !important;
     &-brand{
@@ -7,3 +7,24 @@
     }
 }
 
+.search_area{
+    padding-top:50px;
+}
+.no-right-padding{
+    padding-right: 0 !important;
+}
+
+.no-left-padding{
+    padding-left: 0 !important;
+}
+.size-maxcontent{
+    max-height: max-content !important;
+    max-width: max-content !important;
+    align-self: flex-start;
+}
+.btn-search{
+    margin-top: -0.8rem;
+}
+.results-block {
+    display: inline-block !important;
+} 
