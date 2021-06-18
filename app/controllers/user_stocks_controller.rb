@@ -1,15 +1,19 @@
 class UserStocksController < ApplicationController
     def create
-        def create
-            stock = Stock.check_db(params[:ticker])
-            if stock.blank?
-              stock = Stock.new_lookup(params[:ticker])
-              stock.save
-            end  
-            @user_stock = UserStock.create(user: current_user, stock: stock)
-            flash[:notice] = "Stock #{stock.name} was successfully added to your portfolio"
-            redirect_to my_portfolio_path
-          end
+      byebug
+      if current_user.buyer?
+        byebug
+      else
+        stock = Stock.check_db(params[:ticker])
+        if stock.blank?
+          stock = Stock.new_lookup(params[:ticker])
+          stock.save
+        end  
+        @user_stock = UserStock.create(user: current_user, stock: stock)
+        flash[:notice] = "Stock #{stock.name} was successfully added to your portfolio"
+        redirect_to my_portfolio_path
+      end
+      
     end
     def destroy
         stock = Stock.find(params[:id])
@@ -17,5 +21,11 @@ class UserStocksController < ApplicationController
         user_stock.destroy
         flash[:notice] = "#{stock.ticker} was successfully remove from the portfolio"
         redirect_to my_portfolio_path
+    end
+    def new
+      @broker = User.find_by_id(params[:broker])
+      @user_stock = UserStock.new
+      @stock = Stock.check_db(params[:ticker])
+      byebug
     end
 end
