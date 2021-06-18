@@ -1,6 +1,7 @@
 class Stock < ApplicationRecord
   has_many :user_stocks
   has_many :users, through: :user_stocks
+  has_many :transactionrecords
   scope :brokerstocks, -> do 
     joins(:users).where(:users => { :role => 'broker' })
   end

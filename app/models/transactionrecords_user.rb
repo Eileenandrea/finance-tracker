@@ -1,0 +1,2 @@
+class TransactionrecordsUser < ApplicationRecord
+end

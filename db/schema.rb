@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_18_045230) do
+ActiveRecord::Schema.define(version: 2021_06_18_085128) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +27,25 @@ ActiveRecord::Schema.define(version: 2021_06_18_045230) do
     t.decimal "last_price"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "transactionrecords", force: :cascade do |t|
+    t.bigint "stock_id", null: false
+    t.integer "quantity"
+    t.decimal "stock_price"
+    t.decimal "total_price"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["stock_id"], name: "index_transactionrecords_on_stock_id"
+  end
+
+  create_table "transactionrecords_users", force: :cascade do |t|
+    t.bigint "transactionrecord_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["transactionrecord_id"], name: "index_transactionrecords_users_on_transactionrecord_id"
+    t.index ["user_id"], name: "index_transactionrecords_users_on_user_id"
   end
 
   create_table "user_stocks", force: :cascade do |t|
@@ -54,6 +73,9 @@ ActiveRecord::Schema.define(version: 2021_06_18_045230) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "transactionrecords", "stocks"
+  add_foreign_key "transactionrecords_users", "transactionrecords"
+  add_foreign_key "transactionrecords_users", "users"
   add_foreign_key "user_stocks", "stocks"
   add_foreign_key "user_stocks", "users"
 end
