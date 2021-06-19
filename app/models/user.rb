@@ -2,7 +2,9 @@ class User < ApplicationRecord
   enum role: [:broker, :buyer, :admin]
   has_many :user_stocks
   has_many :stocks, through: :user_stocks
-  has_and_belongs_to_many :transactionrecords
+  has_many :broker_transactionrecords, class_name: 'Transactionrecord', foreign_key: 'broker_id'
+  has_many :buyer_transactionrecords, class_name: 'Transactionrecord', foreign_key: 'buyer_id'
+  
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,

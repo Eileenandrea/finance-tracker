@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_18_085128) do
+ActiveRecord::Schema.define(version: 2021_06_19_100357) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,22 +30,17 @@ ActiveRecord::Schema.define(version: 2021_06_18_085128) do
   end
 
   create_table "transactionrecords", force: :cascade do |t|
-    t.bigint "stock_id", null: false
-    t.integer "quantity"
     t.decimal "stock_price"
+    t.integer "quantity"
     t.decimal "total_price"
+    t.bigint "stock_id", null: false
+    t.bigint "broker_id", null: false
+    t.bigint "buyer_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["broker_id"], name: "index_transactionrecords_on_broker_id"
+    t.index ["buyer_id"], name: "index_transactionrecords_on_buyer_id"
     t.index ["stock_id"], name: "index_transactionrecords_on_stock_id"
-  end
-
-  create_table "transactionrecords_users", force: :cascade do |t|
-    t.bigint "transactionrecord_id", null: false
-    t.bigint "user_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["transactionrecord_id"], name: "index_transactionrecords_users_on_transactionrecord_id"
-    t.index ["user_id"], name: "index_transactionrecords_users_on_user_id"
   end
 
   create_table "user_stocks", force: :cascade do |t|
@@ -74,8 +69,8 @@ ActiveRecord::Schema.define(version: 2021_06_18_085128) do
   end
 
   add_foreign_key "transactionrecords", "stocks"
-  add_foreign_key "transactionrecords_users", "transactionrecords"
-  add_foreign_key "transactionrecords_users", "users"
+  add_foreign_key "transactionrecords", "users", column: "broker_id"
+  add_foreign_key "transactionrecords", "users", column: "buyer_id"
   add_foreign_key "user_stocks", "stocks"
   add_foreign_key "user_stocks", "users"
 end
