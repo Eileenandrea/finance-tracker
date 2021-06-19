@@ -1,0 +1,30 @@
+<h1>Order Entry</h1>
+<div class="row">
+    <div class="col-9">
+    <%= form_with scope: :user_stocks, url: user_stocks_path, local:true do |f|%>
+      <%=f.hidden_field :ticker, :value => @stock.ticker%>
+      <div class="form-group">
+        <%= f.label :broker %>
+        <%= f.text_field :broker, autofocus: true, autocomplete: 'email', class: 'form-control', value:"#{@broker.username}", :readonly => 'true' %>
+      </div>
+      <div class="form-group">
+        <%= f.label :stock %>
+        <%= f.text_field :broker, autofocus: true, autocomplete: 'email', class: 'form-control', value:"#{@stock.name} (#{@stock.ticker})", :readonly => 'true' %>
+      </div>
+      
+        <div class="form-group">
+          <%= f.label :quantity %>
+          <%= f.number_field :quantity, autofocus: true, autocomplete: 'email', class: 'form-control' %>
+        </div>
+        <div class="form-group">
+        <%= f.label "Price" %>
+        <%= f.text_field :stock_price, autofocus: true, class: 'form-control', value:"#{@stock.last_price}", :readonly => 'true'%>
+      </div>
+        <div class="form-group">
+          <%= f.submit 'Submit order', class: 'btn btn-primary' %>
+        </div>
+
+      <% end %>
+    
+    </div>
+</div>

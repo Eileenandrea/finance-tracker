@@ -22,3 +22,32 @@
     <%end%>
     </div>
 <% end %> 
+
+<% if @stock && current_user.buyer?%>
+
+
+  <h5 class="card-header mt-5">Buy this Stock</h5>
+
+  <div class="row">
+  <div class="col-9">
+    <table class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th scope="col-9">broker</th>
+        <th scope="col-3">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+    <%@broker_list.each do |broker|%>
+      <tr>
+        <th scope="row"><%="#{broker.first_name} #{broker.last_name}"%></th>
+        <td><%=link_to 'Buy', new_user_stock_path(broker:broker, ticker: @stock.ticker), class: "btn btn-xs btn-success"%></td> 
+      </tr>
+    <%end%>
+      
+    </tbody>
+  </table>
+  </div>
+  </div>
+
+<%end%>

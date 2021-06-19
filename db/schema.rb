@@ -10,10 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_17_075105) do
+ActiveRecord::Schema.define(version: 2021_06_18_085128) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "roles", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "stocks", force: :cascade do |t|
     t.string "ticker"
@@ -21,6 +27,25 @@ ActiveRecord::Schema.define(version: 2021_06_17_075105) do
     t.decimal "last_price"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "transactionrecords", force: :cascade do |t|
+    t.bigint "stock_id", null: false
+    t.integer "quantity"
+    t.decimal "stock_price"
+    t.decimal "total_price"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["stock_id"], name: "index_transactionrecords_on_stock_id"
+  end
+
+  create_table "transactionrecords_users", force: :cascade do |t|
+    t.bigint "transactionrecord_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["transactionrecord_id"], name: "index_transactionrecords_users_on_transactionrecord_id"
+    t.index ["user_id"], name: "index_transactionrecords_users_on_user_id"
   end
 
   create_table "user_stocks", force: :cascade do |t|
@@ -42,10 +67,15 @@ ActiveRecord::Schema.define(version: 2021_06_17_075105) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "first_name"
     t.string "last_name"
+    t.integer "role"
+    t.string "username"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "transactionrecords", "stocks"
+  add_foreign_key "transactionrecords_users", "transactionrecords"
+  add_foreign_key "transactionrecords_users", "users"
   add_foreign_key "user_stocks", "stocks"
   add_foreign_key "user_stocks", "users"
 end
