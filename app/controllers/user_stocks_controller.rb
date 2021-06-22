@@ -4,9 +4,12 @@ class UserStocksController < ApplicationController
     @params = order_params
     @total_price = @params[:quantity].to_i * @params[:price].to_d
     if current_user.stock_already_tracked?(params[:user_stocks][:ticker])
-      
-      update
-
+      @user_stock = current_user.user_stocks.where(stock_id: @stock.id).first
+      if @params[:transactiontype] == 'sell' && @params[:quantity].to_i == @user_stock.total_shares.to_i
+        destroy
+      else
+        update
+      end
     else
       if @params[:transactiontype] == 'buy'
         create
@@ -35,11 +38,15 @@ class UserStocksController < ApplicationController
     end
   end
   def update
-    @user_stock = current_user.user_stocks.where(stock_id: @stock.id).first
-    total_shares = @user_stock.total_shares + @params[:quantity].to_d
-    total_equity =((@user_stock.average_price *  @user_stock.total_shares) + @total_price)
-    average_price =  total_equity / total_shares
-     if(@user_stock.update(average_price: average_price, total_shares: total_shares))
+    if @params[:transactiontype] == 'buy'
+      total_shares = @user_stock.total_shares + @params[:quantity].to_d
+      total_equity =((@user_stock.average_price *  @user_stock.total_shares) + @total_price)
+      average_price =  total_equity / total_shares
+    elsif @params[:transactiontype] == 'sell'
+      total_shares = @user_stock.total_shares - @params[:quantity].to_d
+      average_price = @user_stock.average_price
+    end
+    if(@user_stock.update(average_price: average_price, total_shares: total_shares))
       save_transaction
       flash[:notice] = 'Successfull Transaction'
       redirect_to my_portfolio_path
@@ -49,11 +56,18 @@ class UserStocksController < ApplicationController
     end
   end
   def destroy
-    @stock = Stock.find(params[:id])
-    user_stock = UserStock.where(user_id: current_user.id, stock_id: @stock.id).first
-    user_stock.destroy
-    flash[:notice] = "#{@stock.ticker} was successfully remove from the portfolio"
-    redirect_to my_portfolio_path
+    if @user_stock
+      @user_stock.destroy
+      save_transaction
+      flash[:notice] = "Successfull Transaction"
+      redirect_to my_portfolio_path
+    else
+      @stock = Stock.find(params[:id])
+      user_stock = UserStock.where(user_id: current_user.id, stock_id: @stock.id).first
+      user_stock.destroy
+      flash[:notice] = "#{@stock.ticker} was successfully remove from the portfolio"
+      redirect_to my_portfolio_path
+    end
   end
   def new
     @broker = User.find_by_id(params[:broker])

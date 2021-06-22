@@ -1,7 +1,11 @@
 class UserStock < ApplicationRecord
   belongs_to :user
   belongs_to :stock
-
+  validates :total_shares, numericality: { greater_than: 0 }, if: :user_buyer?
+  
+  def user_buyer?
+    self.user.buyer?
+  end
   def market_value
     '%.2f' % (self.total_shares * self.stock.last_price.to_f)
   end
