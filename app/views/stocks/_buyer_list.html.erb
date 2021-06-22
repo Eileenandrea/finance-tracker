@@ -31,6 +31,11 @@
       <td><%=user_stock.market_value%></td>
       <td><%=user_stock.gain_loss%></td>
       <td><%=user_stock.percent_gain_loss%>%</td>
+      <td><%=link_to 'Buy', new_user_stock_path(broker:nil, ticker: user_stock.stock.ticker, transactiontype: 'buy'), class: "btn btn-xs btn-success"%> 
+        <%if current_user.stock_already_tracked?(user_stock.stock.ticker)%>
+        <%=link_to 'Sell', new_user_stock_path(broker:nil, ticker: user_stock.stock.ticker, transactiontype: 'sell'), class: "btn btn-xs btn-danger"%></td> 
+        <%end%>
+        </td>
     </tr>
   <%end%>
     

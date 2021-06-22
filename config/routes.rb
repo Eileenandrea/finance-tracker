@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   root 'welcome#index'
   post 'stocks/order', to: 'user_stocks#order', as: 'order_stocks'
   get 'my_portfolio', to:'users#my_portfolio'
+  get 'transactions', to:'users#transactions'
   get 'search_stock', to:'stocks#search'
   get 'stocks', to: 'stocks#index', as:  'stocks'
 end
