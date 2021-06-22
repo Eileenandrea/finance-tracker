@@ -1,5 +1,11 @@
 <h1>My Portfolio</h1>
 
-<%if !@tracked_stocks.empty?%>
-   <%=render 'stocks/list'%>
+<%if !@tracked_stocks.empty?%> 
+  <%if current_user.broker?%>
+    <%=render 'stocks/broker_list'%>
+  <%else%>
+    <%=render 'stocks/buyer_list'%>
+  <%end%>
+<%else%>
+  <h1>You Dont have Any Stocks Right now</h1>
 <%end%>

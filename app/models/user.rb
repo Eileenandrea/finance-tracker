@@ -15,11 +15,10 @@ class User < ApplicationRecord
     return false unless stock
     stocks.where(id: stock.id).exists?
   end      
-  
-  
+    
+
   def under_stock_limit?
     stocks.count < 10
-  
   end
   
   def can_track_stock?(ticker_symbol)
@@ -29,5 +28,8 @@ class User < ApplicationRecord
   def full_name
     return "#{first_name} #{last_name}" if first_name || last_name
     "Anonymous"
+  end
+  def total_net_cost
+    self.user_stocks.sum("total_shares * average_price")
   end
 end
