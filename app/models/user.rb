@@ -10,10 +10,21 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
   
-  after_create :welcome_send
+  after_create :sign_up_proccess
+  before_create :approve_buyer
+  def approve_buyer
+    if self.buyer?
+      self.approved = true
+    end
+  end
 
-  def welcome_send
-    WelcomeMailer.welcome_send(self).deliver
+  def sign_up_proccess
+    if self.buyer?
+      WelcomeMailer.welcome_send(self).deliver
+    else
+      WelcomeMailer.welcome_send(self).deliver
+      AdminMailer.new_user_waiting_for_approval(email).deliver
+    end
   end
   
   def stock_already_tracked?(ticker_symbol)
@@ -37,5 +48,13 @@ class User < ApplicationRecord
   end
   def total_net_cost
     self.user_stocks.sum("total_shares * average_price")
+  end
+  
+  def active_for_authentication? 
+    super && approved? 
+  end 
+  
+  def inactive_message 
+    approved? ? super : :not_approved
   end
 end
